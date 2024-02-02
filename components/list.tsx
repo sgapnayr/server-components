@@ -13,10 +13,25 @@ export default function ClientSideList() {
     setLoading(true);
     try {
       const response = await axios.get("/api/post");
-      setLoading(false);
       setPosts(response.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching posts:", error);
+      setLoading(false);
+    }
+  };
+
+  const createPost = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post("/api/posts/create", {
+        title: "New Post",
+        content: "This is a new post.",
+      });
+      setPosts([response.data, ...posts]);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error creating post:", error);
       setLoading(false);
     }
   };
@@ -37,6 +52,12 @@ export default function ClientSideList() {
       ) : (
         <p>{isLoading ? "Loading..." : "No posts available."}</p>
       )}
+      <button
+        onClick={createPost}
+        className="bg-red-500 hover:bg-red-600 p-4 rounded-md cursor-pointer active:bg-red-700"
+      >
+        Create Post
+      </button>
     </div>
   );
 }
